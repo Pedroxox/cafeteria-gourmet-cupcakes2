@@ -27,12 +27,19 @@ class CheckoutController extends Controller
         }
 
         $dados = $request->validate([
-            'nome_cliente'      => 'required|string|max:255',
-            'email_cliente'     => 'required|email',
-            'endereco_entrega'  => 'required|string',
-            'data_entrega'      => 'required|date',
-            'hora_entrega'      => 'required',
-        ]);
+    'nome_cliente'     => 'required|string|max:255',
+    'email_cliente'    => 'required|email',
+    'endereco_entrega' => 'required|string',
+    'data_entrega'     => 'required|date',
+    'hora_entrega'     => 'required',
+], [
+    'nome_cliente.required'     => 'O nome deve ser preenchido.',
+    'email_cliente.required'    => 'O e-mail deve ser preenchido.',
+    'endereco_entrega.required' => 'O endereço deve ser preenchido.',
+    'data_entrega.required'     => 'A data deve ser preenchida.',
+    'hora_entrega.required'     => 'O horário deve ser preenchido.',
+]);
+
 
         $total = collect($carrinho)->sum(fn ($item) => $item['preco'] * $item['quantidade']);
 
