@@ -3,13 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produto;
+use App\Support\ProdutoRepository;
 use Illuminate\Http\Request;
 
 class CarrinhoController extends Controller
 {
+    public function __construct(private readonly ProdutoRepository $produtos)
+    {
+    }
+
     public function adicionar(Request $request)
     {
         $produto = Produto::findOrFail($request->produto_id);
+        $produto = $this->produtos->findAtivoOrFail((int) $request->produto_id);
         $quantidade = (int) $request->input('quantidade', 1);
 
         $carrinho = session()->get('carrinho', []);
@@ -36,18 +42,4 @@ class CarrinhoController extends Controller
 
         return view('carrinho.index', compact('carrinho', 'total'));
     }
-
-    public function remover(Request $request)
-    {
-        $id = $request->produto_id;
-        $carrinho = session()->get('carrinho', []);
-
-        if (isset($carrinho[$id])) {
-            unset($carrinho[$id]);
-            session()->put('carrinho', $carrinho);
-        }
-
-        return redirect()->route('carrinho.ver');
-    }
 }
-
