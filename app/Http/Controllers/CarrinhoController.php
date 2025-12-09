@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Produto;
+use App\Support\ProdutoRepository;
 use Illuminate\Http\Request;
 
 class CarrinhoController extends Controller
 {
+    public function __construct(private readonly ProdutoRepository $produtos)
+    {
+    }
+
     public function adicionar(Request $request)
     {
-        $produto = Produto::findOrFail($request->produto_id);
+        $produto = $this->produtos->findAtivoOrFail((int) $request->produto_id);
         $quantidade = (int) $request->input('quantidade', 1);
 
         $carrinho = session()->get('carrinho', []);
