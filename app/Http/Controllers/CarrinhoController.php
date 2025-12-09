@@ -42,4 +42,21 @@ class CarrinhoController extends Controller
 
         return view('carrinho.index', compact('carrinho', 'total'));
     }
+     public function remover(Request $request)
+    {
+ 
+        $id = $request->input('produto_id');
+
+        $carrinho = session()->get('carrinho', []);
+
+        if (isset($carrinho[$id])) {
+            unset($carrinho[$id]);
+            session()->put('carrinho', $carrinho);
+        }
+
+        return redirect()
+            ->route('carrinho.ver')
+            ->with('sucesso', 'Produto removido do carrinho!');
+    }
+
 }
